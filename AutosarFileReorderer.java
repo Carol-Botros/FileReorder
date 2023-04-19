@@ -28,11 +28,21 @@ public class AutosarFileReorderer {
         String outputFileName = inputFileName.replace(".arxml", "_mod.arxml");
 
         try {
+            // Check if the input file has the .arxml extension
+            if (!inputFileName.endsWith(".arxml")) {
+                throw new NotVaildAutosarFileException("Invalid file extension. The input file must have the .arxml extension.");
+            }
+
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.parse(new File(inputFileName));
 
             List<Element> containerElements = getContainerElements(document.getDocumentElement());
+
+            // Check if the input file is empty
+            if (containerElements.isEmpty()) {
+                throw new EmptyAutosarFileException("The input file is empty.");
+            }
 
             Collections.sort(containerElements, (c1, c2) -> c1.getElementsByTagName("SHORT-NAME").item(0).getTextContent()
                     .compareTo(c2.getElementsByTagName("SHORT-NAME").item(0).getTextContent()));
@@ -44,6 +54,10 @@ public class AutosarFileReorderer {
             System.out.println("Reordering successful. Output written to " + outputFileName);
         } catch (IOException | SAXException | ParserConfigurationException | TransformerException e) {
             e.printStackTrace();
+        } catch (NotVaildAutosarFileException e) {
+            System.err.println(e.getMessage());
+        } catch (EmptyAutosarFileException e) {
+            System.err.println(e.getMessage());
         }
     }
 
@@ -93,5 +107,17 @@ public class AutosarFileReorderer {
         transformer.transform(source, result);
 
         writer.close();
+    }
+}
+
+class NotVaildAutosarFileException extends Exception {
+    public NotVaildAutosarFileException(String message) {
+        super(message);
+    }
+}
+
+class EmptyAutosarFileException extends RuntimeException {
+    public EmptyAutosarFileException(String message) {
+        super(message);
     }
 }
