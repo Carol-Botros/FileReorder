@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR>
+  <CONTAINER>
+    <SHORT-NAME>Container1</SHORT-NAME>
+    <ELEMENT>
+      <SHORT-NAME>Element1</SHORT-NAME>
+    </ELEMENT>
+  </CONTAINER>
+</AUTOSAR>
